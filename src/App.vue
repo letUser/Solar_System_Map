@@ -18,7 +18,8 @@ export default {
 <style>
 body {
   margin: 0;
-  background-color: url(~@/assets/space.jpg);
+  background: url(./assets/space.jpg) no-repeat fixed;
+  background-size: cover;
 }
 
 #app {
