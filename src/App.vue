@@ -1,16 +1,19 @@
 <template>
   <div id="app">
     <Header />
+    <Map />
   </div>
 </template>
 
 <script>
 import Header from "./components/header.vue";
+import Map from "./components/map.vue";
 
 export default {
   name: "App",
   components: {
-    Header
+    Header,
+    Map
   }
 };
 </script>

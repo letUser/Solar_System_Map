@@ -2,19 +2,19 @@
   <div class="header">
     <ul>
       <li>
-        <a>About</a>
+        <a href="#about">About</a>
       </li>
       <li>
-        <a>1</a>
+        <a href="#1">1</a>
       </li>
       <li>
-        <a>1</a>
+        <a href="#1">1</a>
       </li>
       <li>
-        <a>Contact</a>
+        <a href="#contacts">Contacts</a>
       </li>
       <li>
-        <a>1</a>
+        <a href="#1">1</a>
       </li>
     </ul>
   </div>
@@ -23,9 +23,7 @@
 <script>
 export default {
   name: "Header",
-  props: {
-    msg: String
-  }
+  props: {}
 };
 </script>
 
@@ -65,5 +63,6 @@ li {
 li a {
   color: rgba(216, 216, 216, 0.904);
   font-size: 1rem;
+  text-decoration: none;
 }
 </style>
