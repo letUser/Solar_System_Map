@@ -23,6 +23,8 @@ body {
   margin: 0;
   background: url(./assets/space.jpg) no-repeat fixed;
   background-size: cover;
+  position: fixed;
+  overflow: hidden;
 }
 
 #app {
