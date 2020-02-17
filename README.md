@@ -1,24 +1,6 @@
-# solar_system_map
+<h3>Solar System Map</h3>
+<hr />
 
-## Project setup
-```
-npm install
-```
+This project is building via <i>Vue</i> to visualize Solar System\`s objects in real time using NASA APIs.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
