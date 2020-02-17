@@ -10,7 +10,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 let camera = new THREE.PerspectiveCamera(
-  60,
+  30,
   window.innerWidth / window.innerHeight,
   1,
   1000
@@ -24,7 +24,7 @@ const loader = new THREE.TextureLoader();
 const sunGeometry = new THREE.SphereGeometry(1, 22, 23);
 const sunMaterial = new THREE.MeshBasicMaterial({
   map: loader.load(
-    "https://img1.goodfon.ru/wallpaper/nbig/b/50/poligony-linii-grani-solnce.jpg"
+    "https://thumbs.dreamstime.com/b/%D1%82%D0%B5%D0%BA%D1%81%D1%82%D1%83%D1%80%D0%B0-%D1%81%D0%BE-%D0%BD%D0%B5%D1%87%D0%BD%D0%B0%D1%8F-%D0%BF%D0%BE%D0%B2%D0%B5%D1%80%D1%85%D0%BD%D0%BE%D1%81%D1%82%D1%8C-65738086.jpg"
   )
 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
@@ -135,10 +135,10 @@ const animate = function() {
   requestAnimationFrame(animate);
 
   sun.rotation.y += 0.001;
-  merk.rotation.y += 0.003;
-  ven.rotation.y += 0.002;
-  earth.rotation.y += 0.002;
-  mars.rotation.y += 0.002;
+  merk.rotation.y += 0.01;
+  ven.rotation.y += 0.02;
+  earth.rotation.y += 0.02;
+  mars.rotation.y += 0.01;
   upit.rotation.y += 0.001;
   sat.rotation.y += 0.001;
   ur.rotation.y += 0.001;
