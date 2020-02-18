@@ -15,6 +15,7 @@ export default {
       loader: null,
       renderer: null,
       mesh: null,
+      light: null,
       sun: null,
       merk: null,
       ven: null,
@@ -35,9 +36,13 @@ export default {
       this.renderer.setSize(window.innerWidth, window.innerHeight); //размер сцены по окну
       document.body.appendChild(this.renderer.domElement); //вставляем в дом
 
+      const color = 0x000000;
+      const intensity = 1;
+      this.light = new THREE.AmbientLight(color, intensity);
+
       //создаем камеру
       this.camera = new THREE.PerspectiveCamera(
-        30, //поле зрения
+        5, //поле зрения
         window.innerWidth / window.innerHeight, //aspectRatio
         1, //ближайший объект
         10000 //дальнейший объект
@@ -48,6 +53,7 @@ export default {
       this.scene = new THREE.Scene(); //создаем сцену
       this.loader = new THREE.TextureLoader(); //создаем загрузчик текстур
       this.scene.fog = new THREE.Fog(0xffffff, 1, 950); //добавляем туман
+      this.scene.add(this.light);
 
       //солнце
       const sunGeometry = new THREE.SphereGeometry(1, 64, 64); //фигура солнца
