@@ -1604,7 +1604,7 @@ let Astronomy = new AstronomyClass();
 
 export {
     Astronomy
-}
+};
 
 /*
     $Log: astronomy.js,v $
