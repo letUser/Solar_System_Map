@@ -1611,6 +1611,7 @@ export {
 
     Revision 1.34 2020/02/24 00:51:43 Danil.Sotnik
     Refactored according with modern eslint requirements.
+    { "esversion": 6 }
 
     Revision 1.33  2009/03/08 00:02:10  Don.Cross
     My C# astro.exe (compiled as sun.exe) now has a "javascript" option that generates constellation.js.
