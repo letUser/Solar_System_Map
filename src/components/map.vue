@@ -5,6 +5,7 @@
 <script>
 import * as THREE from "three";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
+import { Astronomy } from "./astronomy.js";
 
 export default {
   name: "Map",
@@ -33,9 +34,12 @@ export default {
   },
   methods: {
     init: function() {
-      this.renderer = new THREE.WebGLRenderer(
-        /* { alpha: true } */ { antialias: true }
-      );
+
+      console.log(
+ Astronomy.Body[1].EclipticCartesianCoordinates(Astronomy.DayValue(new Date()))
+);
+
+      this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
       this.renderer.setSize(window.innerWidth, window.innerHeight);
       this.renderer.shadowMap.enabled = true;
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -151,7 +155,7 @@ export default {
 
       this.light.power = 25;
       this.light.decay = 2;
-      this.light.distance = 50;
+      this.light.distance = 1000;
       this.scene.add(this.light);
 
       this.light.shadow.mapSize.width = 512;
@@ -159,46 +163,75 @@ export default {
       this.light.shadow.camera.near = 0.1;
       this.light.shadow.camera.far = 10000;
 
-      var radius = 20;
-      var radials = 16;
-      var circles = 8;
-      var divisions = 64;
+      let radius = 20;
+      let radials = 16;
+      let circles = 8;
+      let divisions = 64;
 
-      var helper2 = new THREE.PolarGridHelper(
+      let helper2 = new THREE.PolarGridHelper(
         radius,
         radials,
         circles,
         divisions
       );
       this.scene.add(helper2);
-
-      this.currentAngle = 0;
     },
     loop: function() {
-      this.merk.position.x = 2.5 * Math.cos(this.currentAngle);
-      this.merk.position.z = 2.5 * Math.sin(this.currentAngle);
+      this.merk.position.x =
+        (57910000 / 10000000) * Math.cos(this.currentAngle * 0.1); //расстояние от солнца до мерка / 10млн
+      this.merk.position.z =
+        (57910000 / 10000000) * Math.sin(this.currentAngle * 0.1);
+      //   let merkOrbit = 2 * Math.PI * 57910000;
+      //   //let merkSpeed = 47.36*3600;
+      //  // let merkTime = merkOrbit/merkSpeed;
+      //   console.log(merkOrbit)
+      //   let i = 57910000/2.5
+      //   console.log(i);
+      //2868872,72
+      //939872988 === 62.8 === 11sec = === 110sec //31557600
 
-      this.ven.position.x = 5 * Math.cos(this.currentAngle);
-      this.ven.position.z = 5 * Math.sin(this.currentAngle);
+      this.ven.position.x =
+        (108208930 / 10000000) * Math.cos(this.currentAngle * 0.000006912);
+      this.ven.position.z =
+        (108208930 / 10000000) * Math.sin(this.currentAngle * 0.000006912);
 
-      this.earth.position.x = 7.5 * Math.cos(this.currentAngle);
-      this.earth.position.z = 7.5 * Math.sin(this.currentAngle);
+      this.earth.position.x =
+        (149598261 / 10000000) *
+        Math.cos(this.currentAngle * 0.000000286887272); //пройдет 939872988км за 365 дней (сделает полный круг)
+      this.earth.position.z =
+        (149598261 / 10000000) *
+        Math.sin(this.currentAngle * 0.000000286887272);
 
-      this.mars.position.x = 10 * Math.cos(this.currentAngle);
-      this.mars.position.z = 10 * Math.sin(this.currentAngle);
+      this.mars.position.x =
+        ((2.2794382 * Math.pow(10, 8)) / 10000000) *
+        Math.cos(this.currentAngle * 0.1);
+      this.mars.position.z =
+        ((2.2794382 * Math.pow(10, 8)) / 10000000) *
+        Math.sin(this.currentAngle * 0.1);
 
-      this.upit.position.x = 15 * Math.cos(this.currentAngle);
-      this.upit.position.z = 15 * Math.sin(this.currentAngle);
+      this.upit.position.x =
+        ((7.785472 * Math.pow(10, 8)) / 10000000) *
+        Math.cos(this.currentAngle * 0.1);
+      this.upit.position.z =
+        ((7.785472 * Math.pow(10, 8)) / 10000000) *
+        Math.sin(this.currentAngle * 0.1);
 
-      this.sat.position.x = 20 * Math.cos(this.currentAngle);
-      this.sat.position.z = 20 * Math.sin(this.currentAngle);
+      this.sat.position.x =
+        (1429394069 / 10000000) * Math.cos(this.currentAngle * 0.1);
+      this.sat.position.z =
+        (1429394069 / 10000000) * Math.sin(this.currentAngle * 0.1);
 
-      this.ur.position.x = 25 * Math.cos(this.currentAngle);
-      this.ur.position.z = 25 * Math.sin(this.currentAngle);
+      this.ur.position.x =
+        (2876679082 / 10000000) * Math.cos(this.currentAngle * 0.1);
+      this.ur.position.z =
+        (2876679082 / 10000000) * Math.sin(this.currentAngle * 0.1);
 
-      this.nep.position.x = 30 * Math.cos(this.currentAngle);
-      this.nep.position.z = 30 * Math.sin(this.currentAngle);
+      this.nep.position.x =
+        (4503443661 / 10000000) * Math.cos(this.currentAngle * 0.1);
+      this.nep.position.z =
+        (4503443661 / 10000000) * Math.sin(this.currentAngle * 0.1);
 
+      if (this.currentAngle >= 62.8) this.currentAngle = 0;
       this.currentAngle += 0.01;
       this.renderer.render(this.scene, this.camera);
 
