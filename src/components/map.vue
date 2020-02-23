@@ -5,7 +5,6 @@
 <script>
 import * as THREE from "three";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
-import { Astronomy } from "./astronomy.js";
 
 export default {
   name: "Map",
@@ -34,11 +33,6 @@ export default {
   },
   methods: {
     init: function() {
-
-      console.log(
- Astronomy.Body[1].EclipticCartesianCoordinates(Astronomy.DayValue(new Date()))
-);
-
       this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
       this.renderer.setSize(window.innerWidth, window.innerHeight);
       this.renderer.shadowMap.enabled = true;
@@ -178,17 +172,11 @@ export default {
     },
     loop: function() {
       this.merk.position.x =
-        (57910000 / 10000000) * Math.cos(this.currentAngle * 0.1); //расстояние от солнца до мерка / 10млн
+        merkXYZ.x * Math.cos(this.currentAngle * 0.1);
+      this.merk.position.y =
+        merkXYZ.y * Math.cos(this.currentAngle * 0.1);
       this.merk.position.z =
-        (57910000 / 10000000) * Math.sin(this.currentAngle * 0.1);
-      //   let merkOrbit = 2 * Math.PI * 57910000;
-      //   //let merkSpeed = 47.36*3600;
-      //  // let merkTime = merkOrbit/merkSpeed;
-      //   console.log(merkOrbit)
-      //   let i = 57910000/2.5
-      //   console.log(i);
-      //2868872,72
-      //939872988 === 62.8 === 11sec = === 110sec //31557600
+        merkXYZ.z * Math.sin(this.currentAngle * 0.1);
 
       this.ven.position.x =
         (108208930 / 10000000) * Math.cos(this.currentAngle * 0.000006912);
