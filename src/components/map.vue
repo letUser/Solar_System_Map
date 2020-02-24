@@ -5,6 +5,7 @@
 <script>
 import * as THREE from "three";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
+import { Astronomy } from "./calculations/astronomy.js";
 
 export default {
   name: "Map",
@@ -28,7 +29,17 @@ export default {
       sat: null,
       ur: null,
       nep: null,
-      currentAngle: 0
+      plut: null,
+      currentAngle: 0,
+      merkXYZ: null,
+      venXYZ: null,
+      earthXYZ: null,
+      marsXYZ: null,
+      upitXYZ: null,
+      satXYZ: null,
+      urXYZ: null,
+      nepXYZ: null,
+      plutXYZ: null
     };
   },
   methods: {
@@ -54,22 +65,16 @@ export default {
       this.controls.rotateSpeed = 1.5;
       this.controls.zoomSpeed = 2.4;
 
-      this.camera.position.set(0, 20, 100);
+      this.camera.position.set(0, 300, 1);
       this.controls.update();
 
       /* МЕШЫ */
       const sunGeometry = new THREE.SphereGeometry(1, 64, 64);
-      const sunMaterial = new THREE.MeshBasicMaterial({
-        map: this.loader.load(
-          "https://thumbs.dreamstime.com/b/%D1%82%D0%B5%D0%BA%D1%81%D1%82%D1%83%D1%80%D0%B0-%D1%81%D0%BE-%D0%BD%D0%B5%D1%87%D0%BD%D0%B0%D1%8F-%D0%BF%D0%BE%D0%B2%D0%B5%D1%80%D1%85%D0%BD%D0%BE%D1%81%D1%82%D1%8C-65738086.jpg"
-        )
-      });
+      const sunMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
       this.sun = new THREE.Mesh(sunGeometry, sunMaterial);
       this.sun.castShadow = true;
-      this.sun.position.x = 0;
-      this.sun.position.y = 0;
-      this.sun.position.z = 0;
       this.scene.add(this.sun);
+
       const merkGeometry = new THREE.SphereGeometry(0.05, 64, 64);
       const merkMaterial = new THREE.MeshLambertMaterial({
         map: this.loader.load(
@@ -82,9 +87,8 @@ export default {
       this.scene.add(this.merk);
       const venGeometry = new THREE.SphereGeometry(0.15, 64, 64);
       const venMaterial = new THREE.MeshLambertMaterial({
-        map: this.loader.load(
-          "https://topling61.ru/images/detailed/12/p52182_1003092_shahti_plitka_napolnaya_330330_venera_palevaya_kg_.jpg"
-        )
+        map: new THREE.TextureLoader().load("@assets/textures/Merk.jpg"),
+        side: THREE.DoubleSide
       });
       this.ven = new THREE.Mesh(venGeometry, venMaterial);
       this.ven.castShadow = true;
@@ -140,6 +144,13 @@ export default {
       this.nep.receiveShadow = true;
       this.scene.add(this.nep);
 
+      const plutGeometry = new THREE.SphereGeometry(0.15, 64, 64);
+      const plutMaterial = new THREE.MeshLambertMaterial({ color: 0x000000 });
+      this.plut = new THREE.Mesh(plutGeometry, plutMaterial);
+      this.plut.castShadow = true;
+      this.plut.receiveShadow = true;
+      this.scene.add(this.plut);
+
       this.ambLight = new THREE.AmbientLight(0xffffff, 0.2);
       this.scene.add(this.ambLight);
 
@@ -170,73 +181,87 @@ export default {
       );
       this.scene.add(helper2);
     },
+    calcGEO: function() {
+      this.merkXYZ = Astronomy.Body[1].EclipticCartesianCoordinates(
+        Astronomy.DayValue(new Date())
+      );
+      this.venXYZ = Astronomy.Body[2].EclipticCartesianCoordinates(
+        Astronomy.DayValue(new Date())
+      );
+      this.earthXYZ = Astronomy.Body[3].EclipticCartesianCoordinates(
+        Astronomy.DayValue(new Date())
+      );
+      this.marsXYZ = Astronomy.Body[5].EclipticCartesianCoordinates(
+        Astronomy.DayValue(new Date())
+      );
+      this.upitXYZ = Astronomy.Body[16].EclipticCartesianCoordinates(
+        Astronomy.DayValue(new Date())
+      );
+      this.satXYZ = Astronomy.Body[17].EclipticCartesianCoordinates(
+        Astronomy.DayValue(new Date())
+      );
+      this.urXYZ = Astronomy.Body[18].EclipticCartesianCoordinates(
+        Astronomy.DayValue(new Date())
+      );
+      this.nepXYZ = Astronomy.Body[19].EclipticCartesianCoordinates(
+        Astronomy.DayValue(new Date())
+      );
+      this.plutXYZ = Astronomy.Body[20].EclipticCartesianCoordinates(
+        Astronomy.DayValue(new Date())
+      );
+
+      setTimeout(() => this.calcGEO(), 600000); //обновляем данные каждые 10мин
+    },
     loop: function() {
-      this.merk.position.x =
-        merkXYZ.x * Math.cos(this.currentAngle * 0.1);
-      this.merk.position.y =
-        merkXYZ.y * Math.cos(this.currentAngle * 0.1);
-      this.merk.position.z =
-        merkXYZ.z * Math.sin(this.currentAngle * 0.1);
+      this.merk.position.x = this.merkXYZ.x * 10;
+      this.merk.position.y = this.merkXYZ.y * 10;
+      this.merk.position.z = this.merkXYZ.z * 10;
 
-      this.ven.position.x =
-        (108208930 / 10000000) * Math.cos(this.currentAngle * 0.000006912);
-      this.ven.position.z =
-        (108208930 / 10000000) * Math.sin(this.currentAngle * 0.000006912);
+      this.ven.position.x = this.venXYZ.x * 10;
+      this.ven.position.y = this.venXYZ.y * 10;
+      this.ven.position.z = this.venXYZ.z * 10;
 
-      this.earth.position.x =
-        (149598261 / 10000000) *
-        Math.cos(this.currentAngle * 0.000000286887272); //пройдет 939872988км за 365 дней (сделает полный круг)
-      this.earth.position.z =
-        (149598261 / 10000000) *
-        Math.sin(this.currentAngle * 0.000000286887272);
+      this.earth.position.x = this.earthXYZ.x * 10;
+      this.earth.position.y = this.earthXYZ.y * 10;
+      this.earth.position.z = this.earthXYZ.z * 10;
 
-      this.mars.position.x =
-        ((2.2794382 * Math.pow(10, 8)) / 10000000) *
-        Math.cos(this.currentAngle * 0.1);
-      this.mars.position.z =
-        ((2.2794382 * Math.pow(10, 8)) / 10000000) *
-        Math.sin(this.currentAngle * 0.1);
+      this.mars.position.x = this.marsXYZ.x * 10;
+      this.mars.position.y = this.marsXYZ.y * 10;
+      this.mars.position.z = this.marsXYZ.z * 10;
 
-      this.upit.position.x =
-        ((7.785472 * Math.pow(10, 8)) / 10000000) *
-        Math.cos(this.currentAngle * 0.1);
-      this.upit.position.z =
-        ((7.785472 * Math.pow(10, 8)) / 10000000) *
-        Math.sin(this.currentAngle * 0.1);
+      this.upit.position.x = this.upitXYZ.x * 10;
+      this.upit.position.y = this.upitXYZ.y * 10;
+      this.upit.position.z = this.upitXYZ.z * 10;
 
-      this.sat.position.x =
-        (1429394069 / 10000000) * Math.cos(this.currentAngle * 0.1);
-      this.sat.position.z =
-        (1429394069 / 10000000) * Math.sin(this.currentAngle * 0.1);
+      this.sat.position.x = this.satXYZ.x * 10;
+      this.sat.position.y = this.satXYZ.y * 10;
+      this.sat.position.z = this.satXYZ.z * 10;
 
-      this.ur.position.x =
-        (2876679082 / 10000000) * Math.cos(this.currentAngle * 0.1);
-      this.ur.position.z =
-        (2876679082 / 10000000) * Math.sin(this.currentAngle * 0.1);
+      this.ur.position.x = this.urXYZ.x * 10;
+      this.ur.position.y = this.urXYZ.y * 10;
+      this.ur.position.z = this.urXYZ.z * 10;
 
-      this.nep.position.x =
-        (4503443661 / 10000000) * Math.cos(this.currentAngle * 0.1);
-      this.nep.position.z =
-        (4503443661 / 10000000) * Math.sin(this.currentAngle * 0.1);
+      this.nep.position.x = this.nepXYZ.x * 10;
+      this.nep.position.y = this.nepXYZ.y * 10;
+      this.nep.position.z = this.nepXYZ.z * 10;
 
-      if (this.currentAngle >= 62.8) this.currentAngle = 0;
-      this.currentAngle += 0.01;
-      this.renderer.render(this.scene, this.camera);
-
-      requestAnimationFrame(this.loop);
+      this.plut.position.x = this.plutXYZ.x * 10;
+      this.plut.position.y = this.plutXYZ.y * 10;
+      this.plut.position.z = this.plutXYZ.z * 10;
     },
     animate: function() {
       requestAnimationFrame(this.animate);
 
-      this.sun.rotation.y += 0.001;
+      // this.sun.rotation.y += 0.001;
       this.merk.rotation.y += 0.01;
       this.ven.rotation.y += 0.02;
-      this.earth.rotation.y += 0.02;
+      this.earth.rotation.y += 0.000086;
       this.mars.rotation.y += 0.01;
       this.upit.rotation.y += 0.01;
       this.sat.rotation.y += 0.01;
       this.ur.rotation.y += 0.01;
       this.nep.rotation.y += 0.01;
+      this.plut.rotation.y += 0.01;
 
       this.controls.update();
 
@@ -245,6 +270,7 @@ export default {
   },
   mounted() {
     this.init();
+    this.calcGEO();
     this.loop();
     this.animate();
   }
@@ -254,3 +280,47 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 </style>
+
+
+    // loop: function() {
+    //   this.merk.position.x = this.merkXYZ.x;
+    //   this.merk.position.y = this.merkXYZ.y;
+    //   this.merk.position.z = this.merkXYZ.z;
+
+    //   this.ven.position.x = this.venXYZ.x;
+    //   this.ven.position.y = this.venXYZ.y;
+    //   this.ven.position.z = this.venXYZ.z;
+
+    //   this.earth.position.x = this.earthXYZ.x;
+    //   this.earth.position.y = this.earthXYZ.y;
+    //   this.earth.position.z = this.earthXYZ.z;
+
+    //   this.mars.position.x = this.marsXYZ.x;
+    //   this.mars.position.y = this.marsXYZ.y;
+    //   this.mars.position.z = this.marsXYZ.z;
+
+    //   this.upit.position.x = this.upitXYZ.x;
+    //   this.upit.position.y = this.upitXYZ.y;
+    //   this.upit.position.z = this.upitXYZ.z;
+
+    //   this.sat.position.x =
+    //     (1429394069 / 10000000) * Math.cos(this.currentAngle * 0.1);
+    //   this.sat.position.z =
+    //     (1429394069 / 10000000) * Math.sin(this.currentAngle * 0.1);
+
+    //   this.ur.position.x =
+    //     (2876679082 / 10000000) * Math.cos(this.currentAngle * 0.1);
+    //   this.ur.position.z =
+    //     (2876679082 / 10000000) * Math.sin(this.currentAngle * 0.1);
+
+    //   this.nep.position.x =
+    //     (4503443661 / 10000000) * Math.cos(this.currentAngle * 0.1);
+    //   this.nep.position.z =
+    //     (4503443661 / 10000000) * Math.sin(this.currentAngle * 0.1);
+
+    //   if (this.currentAngle >= 62.8) this.currentAngle = 0;
+    //   this.currentAngle += 0.01;
+    //   this.renderer.render(this.scene, this.camera);
+
+    //   requestAnimationFrame(this.loop);
+    // },
