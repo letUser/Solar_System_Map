@@ -49,13 +49,15 @@ export default {
       this.renderer.autoClearColor = false;
       this.renderer.shadowMap.enabled = true;
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      this.renderer.getMaxAnisotropy();
       document.body.appendChild(this.renderer.domElement);
       this.camera = new THREE.PerspectiveCamera(
         75,
         window.innerWidth / window.innerHeight,
-        0.1,
+        0.0001,
         1000
       );
+
       this.scene = new THREE.Scene();
       this.loader = new THREE.TextureLoader();
       this.controls = new TrackballControls(
@@ -64,9 +66,9 @@ export default {
       );
       this.controls.panSpeed = 0.5;
       this.controls.rotateSpeed = 1.5;
-      this.controls.zoomSpeed = 2.4;
+      this.controls.zoomSpeed = 0.7;
 
-      this.camera.position.set(0, 0, 200);
+      this.camera.position.set(0, 0, 10);
       this.controls.update();
 
       this.scene.background = this.loader.load("./assets/space.jpg");
