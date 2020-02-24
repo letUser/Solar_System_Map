@@ -21,10 +21,13 @@ export default {
 <style>
 body {
   margin: 0;
-  background: url(./assets/space.jpg) no-repeat fixed;
+  /* background: url(./assets/space.jpg) no-repeat fixed; */
   background-size: cover;
   position: fixed;
   overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  display: block;
 }
 
 #app {

@@ -44,16 +44,17 @@ export default {
   },
   methods: {
     init: function() {
-      this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      this.renderer = new THREE.WebGLRenderer({ antialias: true });
       this.renderer.setSize(window.innerWidth, window.innerHeight);
+      this.renderer.autoClearColor = false;
       this.renderer.shadowMap.enabled = true;
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       document.body.appendChild(this.renderer.domElement);
       this.camera = new THREE.PerspectiveCamera(
-        5,
+        75,
         window.innerWidth / window.innerHeight,
         0.1,
-        3000
+        1000
       );
       this.scene = new THREE.Scene();
       this.loader = new THREE.TextureLoader();
@@ -61,16 +62,22 @@ export default {
         this.camera,
         this.renderer.domElement
       );
-      this.controls.panSpeed = 0.02;
+      this.controls.panSpeed = 0.5;
       this.controls.rotateSpeed = 1.5;
       this.controls.zoomSpeed = 2.4;
 
-      this.camera.position.set(0, 300, 1);
+      this.camera.position.set(0, 0, 200);
       this.controls.update();
+
+      this.scene.background = this.loader.load("./assets/space.jpg");
 
       /* МЕШЫ */
       const sunGeometry = new THREE.SphereGeometry(1, 64, 64);
-      const sunMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+      const sunMaterial = new THREE.MeshBasicMaterial({
+        map: this.loader.load(
+          "https://sun9-14.userapi.com/c205628/v205628419/7e86b/uET0t6HqLRU.jpg"
+        )
+      });
       this.sun = new THREE.Mesh(sunGeometry, sunMaterial);
       this.sun.castShadow = true;
       this.scene.add(this.sun);
@@ -78,7 +85,7 @@ export default {
       const merkGeometry = new THREE.SphereGeometry(0.05, 64, 64);
       const merkMaterial = new THREE.MeshLambertMaterial({
         map: this.loader.load(
-          "https://avatars.mds.yandex.net/get-pdb/1623506/cc2c8ccc-4aa2-46f3-b5d5-3c0e5910af12/s600"
+          "https://sun9-16.userapi.com/c857020/v857020302/f482f/ADb7nwZAQdA.jpg"
         )
       });
       this.merk = new THREE.Mesh(merkGeometry, merkMaterial);
@@ -87,8 +94,9 @@ export default {
       this.scene.add(this.merk);
       const venGeometry = new THREE.SphereGeometry(0.15, 64, 64);
       const venMaterial = new THREE.MeshLambertMaterial({
-        map: new THREE.TextureLoader().load("@assets/textures/Merk.jpg"),
-        side: THREE.DoubleSide
+        map: this.loader.load(
+          "https://avatars.mds.yandex.net/get-pdb/1623506/cc2c8ccc-4aa2-46f3-b5d5-3c0e5910af12/s600"
+        )
       });
       this.ven = new THREE.Mesh(venGeometry, venMaterial);
       this.ven.castShadow = true;
@@ -145,7 +153,10 @@ export default {
       this.scene.add(this.nep);
 
       const plutGeometry = new THREE.SphereGeometry(0.15, 64, 64);
-      const plutMaterial = new THREE.MeshLambertMaterial({ color: 0x000000 });
+      const plutMaterial = new THREE.MeshLambertMaterial({
+        alpha: true,
+        color: 0x000000
+      });
       this.plut = new THREE.Mesh(plutGeometry, plutMaterial);
       this.plut.castShadow = true;
       this.plut.receiveShadow = true;
@@ -168,18 +179,32 @@ export default {
       this.light.shadow.camera.near = 0.1;
       this.light.shadow.camera.far = 10000;
 
-      let radius = 20;
-      let radials = 16;
-      let circles = 8;
-      let divisions = 64;
+      const loader = new THREE.CubeTextureLoader();
+      const texture = loader.load([
+        "https://sun9-30.userapi.com/c850608/v850608287/cfaad/0nK6n9jameQ.jpg",
+        "https://sun9-31.userapi.com/c204828/v204828287/817ed/RlTe2zejDe8.jpg",
+        "https://sun9-7.userapi.com/c205716/v205716287/82143/YcQBbbEjsJk.jpg",
+        "https://sun9-2.userapi.com/c205128/v205128287/7fd29/VIULun-SDlo.jpg",
+        "https://sun9-51.userapi.com/c857332/v857332287/832af/5nq9oRiR9r0.jpg",
+        "https://sun9-63.userapi.com/c206824/v206824287/83f19/CLPSpstY-0w.jpg"
+      ]);
 
-      let helper2 = new THREE.PolarGridHelper(
-        radius,
-        radials,
-        circles,
-        divisions
-      );
-      this.scene.add(helper2);
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      this.scene.background = texture;
+
+      // let radius = 20;
+      // let radials = 16;
+      // let circles = 8;
+      // let divisions = 64;
+
+      // let helper2 = new THREE.PolarGridHelper(
+      //   radius,
+      //   radials,
+      //   circles,
+      //   divisions
+      // );
+      // this.scene.add(helper2);
     },
     calcGEO: function() {
       this.merkXYZ = Astronomy.Body[1].EclipticCartesianCoordinates(
@@ -248,30 +273,58 @@ export default {
       this.plut.position.x = this.plutXYZ.x * 10;
       this.plut.position.y = this.plutXYZ.y * 10;
       this.plut.position.z = this.plutXYZ.z * 10;
+
+      this.renderer.render(this.scene, this.camera);
+
+      this.currentAngle += 0.01;
+
+      requestAnimationFrame(this.loop);
     },
     animate: function() {
       requestAnimationFrame(this.animate);
 
-      // this.sun.rotation.y += 0.001;
-      this.merk.rotation.y += 0.01;
-      this.ven.rotation.y += 0.02;
+      this.merk.rotation.y += 0.00000005;
+      this.ven.rotation.y += 0.000000001;
       this.earth.rotation.y += 0.000086;
-      this.mars.rotation.y += 0.01;
-      this.upit.rotation.y += 0.01;
-      this.sat.rotation.y += 0.01;
-      this.ur.rotation.y += 0.01;
-      this.nep.rotation.y += 0.01;
-      this.plut.rotation.y += 0.01;
+      this.mars.rotation.y += 0.000086;
+      this.upit.rotation.y += 0.000034;
+      this.sat.rotation.y += 0.000036;
+      this.ur.rotation.y += 0.000061;
+      this.nep.rotation.y += 0.000057;
+      this.plut.rotation.y += 0.0000000005;
 
       this.controls.update();
 
       this.renderer.render(this.scene, this.camera); //рендерим
+    },
+    resizeRendererToDisplaySize: function() {
+      const canvas = this.renderer.domElement;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const needResize = canvas.width !== width || canvas.height !== height;
+      if (needResize) {
+        this.renderer.setSize(width, height, false);
+      }
+      return needResize;
+    },
+    render: function() {
+      if (this.resizeRendererToDisplaySize(this.renderer)) {
+        const canvas = this.renderer.domElement;
+        this.camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        this.camera.updateProjectionMatrix();
+      }
+
+      this.renderer.render(this.scene, this.camera);
+
+      requestAnimationFrame(this.render);
     }
   },
   mounted() {
     this.init();
     this.calcGEO();
     this.loop();
+    this.resizeRendererToDisplaySize();
+    this.render();
     this.animate();
   }
 };
