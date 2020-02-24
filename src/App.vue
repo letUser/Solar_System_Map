@@ -23,6 +23,7 @@ body {
   margin: 0;
   /* background: url(./assets/space.jpg) no-repeat fixed; */
   background-size: cover;
+  background-color: #000000;
   position: fixed;
   overflow: hidden;
   width: 100vw;
