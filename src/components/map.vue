@@ -66,7 +66,7 @@ export default {
       );
       this.controls.panSpeed = 0.5;
       this.controls.rotateSpeed = 1.5;
-      this.controls.zoomSpeed = 0.7;
+      this.controls.zoomSpeed = 1;
 
       this.camera.position.set(0, 0, 10);
       this.controls.update();
